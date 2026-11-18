@@ -12,6 +12,11 @@ import shutil
 
 HERE = os.path.dirname(os.path.abspath(__file__))
 SRC = os.path.join(HERE, "entry.png")
-DST = os.path.join(os.environ.get("MAKEFUN_OUTPUT_DIR", "/output"), "entry.png")
+OUTDIR = os.environ.get("MAKEFUN_OUTPUT_DIR", "/output")
+DST = os.path.join(OUTDIR, "entry.png")
 
+os.makedirs(OUTDIR, exist_ok=True)
 shutil.copyfile(SRC, DST)
+# The gate reads the whole file: fail loudly if the copy is short.
+if os.path.getsize(DST) != os.path.getsize(SRC):
+    raise RuntimeError("entry.png copy incomplete")
